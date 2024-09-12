@@ -1,4 +1,7 @@
+import re
 from textnode import TextNode
+from imglinkextractor import extract_markdown_images
+from imglinkextractor import extract_markdown_links
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     split_list = []
@@ -10,8 +13,6 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
 
         split_list.extend(node.text.split(delimiter))
 
-    print(split_list)
-
     for seq in split_list:
         if not seq:
             continue
@@ -21,3 +22,60 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             split_nodes.append(TextNode(seq, TextNode.text_type_text))
 
     return split_nodes
+
+def split_nodes_image(old_nodes):
+    img_dict = {}
+    split_list = []
+    split_nodes = []
+
+    for node in old_nodes:
+        if not node.text:
+            continue
+        lst = extract_markdown_images(node.text)
+        if not lst:
+            return old_nodes
+        for tup in lst:
+            img_dict[tup[0]] = tup[1]
+        split_list.extend(node.text.split("!"))
+
+    for seq in split_list:
+        if seq == "":
+            continue
+        if seq.startswith("["):
+            alt_text = seq[1:seq.index("]")]
+            split_nodes.append(TextNode(alt_text, TextNode.text_type_image, img_dict[alt_text]))
+            if seq[-1] != ")":
+                split_nodes.append(TextNode(seq[seq.index(")") + 1:], TextNode.text_type_text))
+        else:
+            split_nodes.append(TextNode(seq, TextNode.text_type_text))
+    
+    return split_nodes
+
+def split_nodes_link(old_nodes):
+    img_dict = {}
+    split_list = []
+    split_nodes = []
+
+    for node in old_nodes:
+        if not node.text:
+            continue
+        lst = extract_markdown_links(node.text)
+        if not lst:
+            return old_nodes
+        for tup in lst:
+            img_dict[tup[0]] = tup[1]
+        split_list.extend(node.text.split("["))
+
+    for seq in split_list:
+        if seq == "":
+            continue
+        if "]" in seq:
+            alt_text = seq[:seq.index("]")]
+            split_nodes.append(TextNode(alt_text, TextNode.text_type_link, img_dict[alt_text]))
+            if seq[-1] != ")":
+                split_nodes.append(TextNode(seq[seq.index(")") + 1:], TextNode.text_type_text))
+        else:
+            split_nodes.append(TextNode(seq, TextNode.text_type_text))
+    
+    return split_nodes
+
