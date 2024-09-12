@@ -18,12 +18,9 @@ class TestHTMLNode(unittest.TestCase):
         actual = node.props_to_html()
         self.assertEqual("", actual)
 
-
     def test_init_all_none(self):
         node = HTMLNode()
         self.assertIsInstance(node, HTMLNode)
-
-
 
 if __name__ == "__main__":
     unittest.main()

@@ -18,6 +18,5 @@ class TestTextNode(unittest.TestCase):
         node_2 = TextNode("This is a text node.", "bold", "https://bum.com")
         self.assertEqual(node_1, node_2)
 
-
 if __name__ == "__main__":
     unittest.main()
