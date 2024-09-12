@@ -10,8 +10,11 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     for node in old_nodes:
         if node.text_type != TextNode.text_type_text:
             split_nodes.append(node)
-
-        split_list.extend(node.text.split(delimiter))
+            continue
+        if len(node.text.split(delimiter)) == 1:
+            split_nodes.append(node)
+        else:
+            split_list.extend(node.text.split(delimiter))
 
     for seq in split_list:
         if not seq:
@@ -31,9 +34,13 @@ def split_nodes_image(old_nodes):
     for node in old_nodes:
         if not node.text:
             continue
+        if node.text_type != TextNode.text_type_text:
+            split_nodes.append(node)
+            continue
         lst = extract_markdown_images(node.text)
         if not lst:
-            return old_nodes
+            split_nodes.append(node)
+            continue
         for tup in lst:
             img_dict[tup[0]] = tup[1]
         split_list.extend(node.text.split("!"))
@@ -44,7 +51,8 @@ def split_nodes_image(old_nodes):
         if seq.startswith("["):
             alt_text = seq[1:seq.index("]")]
             split_nodes.append(TextNode(alt_text, TextNode.text_type_image, img_dict[alt_text]))
-            if seq[-1] != ")":
+            after_text = seq[seq.index(")") + 1:]
+            if after_text:
                 split_nodes.append(TextNode(seq[seq.index(")") + 1:], TextNode.text_type_text))
         else:
             split_nodes.append(TextNode(seq, TextNode.text_type_text))
@@ -59,9 +67,13 @@ def split_nodes_link(old_nodes):
     for node in old_nodes:
         if not node.text:
             continue
+        if node.text_type != TextNode.text_type_text:
+            split_nodes.append(node)
+            continue
         lst = extract_markdown_links(node.text)
         if not lst:
-            return old_nodes
+            split_nodes.append(node)
+            continue
         for tup in lst:
             img_dict[tup[0]] = tup[1]
         split_list.extend(node.text.split("["))

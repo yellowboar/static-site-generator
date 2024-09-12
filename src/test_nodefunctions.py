@@ -2,7 +2,7 @@ import unittest
 
 from textnode import TextNode
 from leafnode import LeafNode
-from nodeconverter import text_node_to_html_node
+from nodeconverter import *
 from nodesplitter import *
 
 class TestNodeFunctions(unittest.TestCase):
@@ -50,7 +50,26 @@ class TestNodeFunctions(unittest.TestCase):
         self.assertIsNone(leaf_node.value)
         self.assertEqual({"src": "https://bum.com", "alt": "This is a text node."}, leaf_node.props)
 
-    # testing node splitter
+    # testing text to textnodes function
+
+    def test_text_to_textnodes(self):
+        md = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        expected = [
+            TextNode("This is ", TextNode.text_type_text),
+            TextNode("text", TextNode.text_type_bold),
+            TextNode(" with an ", TextNode.text_type_text),
+            TextNode("italic",TextNode.text_type_italic),
+            TextNode(" word and a ", TextNode.text_type_text),
+            TextNode("code block", TextNode.text_type_code),
+            TextNode(" and an ", TextNode.text_type_text),
+            TextNode("obi wan image", TextNode.text_type_image, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextNode.text_type_text),
+            TextNode("link", TextNode.text_type_link, "https://boot.dev"),
+        ]
+        actual = text_to_textnodes(md)
+        self.assertEqual(expected, actual)
+
+    # testing node splitter functions
 
     def test_split_nodes(self):
         node = TextNode("This is text with a `code block` word", TextNode.text_type_text)
