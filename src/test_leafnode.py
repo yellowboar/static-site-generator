@@ -3,7 +3,7 @@ from leafnode import LeafNode
 
 class TestLeafNode(unittest.TestCase):
     def test_to_html_no_values(self):
-        node = LeafNode(None, tag="p")
+        node = LeafNode("p", None)
         self.assertRaises(ValueError, node.to_html)
     
     def test_to_html_no_tag(self):
@@ -13,7 +13,7 @@ class TestLeafNode(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_to_html(self):
-        node = LeafNode("Click me!", "a", props={"href": "https://www.google.com"})
+        node = LeafNode("a", "Click me!", props={"href": "https://www.google.com"})
         expected = '<a href="https://www.google.com">Click me!</a>'
         actual = node.to_html()
         self.assertEqual(expected, actual)
