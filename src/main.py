@@ -1,8 +1,8 @@
 from textnode import TextNode
+from copycontents import *
 
 def main():
-    test = TextNode("this is a text node", "bold", "https://www.boot.dev")
-    print(test)
+    copy_contents("./static")
 
 if __name__ == "__main__":
     main()

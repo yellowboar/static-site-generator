@@ -73,7 +73,7 @@ def markdown_to_html_node(markdown):
                 nodes.append(quote_block_to_html_node(block))
             case "normal":
                 nodes.append(paragraph_block_to_html_node(block))              
-    return nodes
+    return HTMLNode("div", children=nodes)
 
 def heading_block_to_html_node(block):
     lines = block.splitlines()
@@ -152,3 +152,12 @@ def text_to_children(text):
     for node in nodes:
         leaf_nodes.append(text_node_to_html_node(node))
     return leaf_nodes
+
+def extract_title(markdown):
+    lines = markdown.splitlines()
+    for line in lines:
+        line.strip()
+        if line.startswith("# "):
+            return line[2:]
+    
+    raise Exception("No title found.")

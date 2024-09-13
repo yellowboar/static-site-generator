@@ -64,8 +64,8 @@ class TestMarkdowns(unittest.TestCase):
             """### This is a *heading*
             # This is a sub heading"""
         )
-        expected = [HTMLNode("h3", children=[HTMLNode(None, "This is a "), HTMLNode("i", "heading")]), 
-                    HTMLNode("h1", children=[HTMLNode(None, "This is a sub heading")])]
+        expected = HTMLNode("div", children=[HTMLNode("h3", children=[HTMLNode(None, "This is a "), HTMLNode("i", "heading")]), 
+                    HTMLNode("h1", children=[HTMLNode(None, "This is a sub heading")])])
         actual = markdown_to_html_node(md)
         self.assertEqual(expected, actual)
     
@@ -74,12 +74,12 @@ class TestMarkdowns(unittest.TestCase):
             """This is a paragraph of text. It has some **bold** and *italic* words inside of it.
             This is still part of the paragraph."""
         )
-        expected = [HTMLNode("p", children=[HTMLNode(None, "This is a paragraph of text. It has some "), 
+        expected = HTMLNode("div", children=[HTMLNode("p", children=[HTMLNode(None, "This is a paragraph of text. It has some "), 
                                             HTMLNode("b", "bold"), 
                                             HTMLNode(None, " and "), 
                                             HTMLNode("i", "italic"), 
                                             HTMLNode(None, " words inside of it."),
-                                            HTMLNode(None, "This is still part of the paragraph.")])]
+                                            HTMLNode(None, "This is still part of the paragraph.")])])
         actual = markdown_to_html_node(md)
         self.assertEqual(expected, actual)
     
@@ -88,12 +88,12 @@ class TestMarkdowns(unittest.TestCase):
             """>This is a quote of text. It has some **bold** and *italic* words inside of it.
             >This is still part of the quote."""
         )
-        expected = [HTMLNode("blockquote", children=[HTMLNode(None, "This is a quote of text. It has some "), 
+        expected = HTMLNode("div", children=[HTMLNode("blockquote", children=[HTMLNode(None, "This is a quote of text. It has some "), 
                                     HTMLNode("b", "bold"), 
                                     HTMLNode(None, " and "), 
                                     HTMLNode("i", "italic"), 
                                     HTMLNode(None, " words inside of it."),
-                                    HTMLNode(None, "This is still part of the quote.")])]
+                                    HTMLNode(None, "This is still part of the quote.")])])
         actual = markdown_to_html_node(md)
         self.assertEqual(expected, actual)
 
@@ -102,12 +102,12 @@ class TestMarkdowns(unittest.TestCase):
             """```This is a quote of text formatted as code. It has some **bold** and *italic* words inside of it.
             This is still part of the quote.```"""
         )
-        expected = [HTMLNode("pre", children=[HTMLNode("code", children=[HTMLNode(None, "This is a quote of text formatted as code. It has some "), 
+        expected = HTMLNode("div", children=[HTMLNode("pre", children=[HTMLNode("code", children=[HTMLNode(None, "This is a quote of text formatted as code. It has some "), 
                                     HTMLNode("b", "bold"), 
                                     HTMLNode(None, " and "), 
                                     HTMLNode("i", "italic"), 
                                     HTMLNode(None, " words inside of it."),
-                                    HTMLNode(None, "This is still part of the quote.")])])]
+                                    HTMLNode(None, "This is still part of the quote.")])])])
         actual = markdown_to_html_node(md)
         self.assertEqual(expected, actual)
         
@@ -130,4 +130,22 @@ class TestMarkdowns(unittest.TestCase):
     #     )
     #     lst = markdown_to_html_node(markdown)
     #     print(lst)
+
+    def test_extract_title(self):
+        markdown = (
+            """# This is the title
+
+            This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+            This is still part of the paragraph.
+
+            * This is the **first list** item in a list block
+            * This is a list item
+            * This is another list item
+            
+            1. This is the `first item` in an ordered list
+            2. This is the second."""
+        )
+        expected = "This is the title"
+        actual = extract_title(markdown)
+        self.assertEqual(expected, actual)
         
