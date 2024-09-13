@@ -16,6 +16,12 @@ class HTMLNode():
         
         prop_str = reduce(lambda x, key: x + f' {key}="{self.props[key]}"', self.props, "")
         return prop_str
+
+    def __eq__(self, other) -> bool:
+        return (self.tag == other.tag and
+            self.value == other.value and
+            self.children == other.children and
+            self.props == other.props)
     
     def __repr__(self):
         return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"

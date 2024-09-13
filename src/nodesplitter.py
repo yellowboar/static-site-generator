@@ -1,4 +1,3 @@
-import re
 from textnode import TextNode
 from imglinkextractor import extract_markdown_images
 from imglinkextractor import extract_markdown_links
@@ -19,6 +18,8 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     for seq in split_list:
         if not seq:
             continue
+        if seq.endswith("\n"):
+            seq = seq[:-1]
         if seq[0] != " " and seq[-1] !=  " ":
             split_nodes.append(TextNode(seq, text_type))
         else: 
