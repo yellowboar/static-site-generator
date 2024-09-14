@@ -27,17 +27,17 @@ class TestMarkdowns(unittest.TestCase):
         self.assertEqual("heading", block_to_block_type(block))
         
         block2 = "####### This is a heading\n"
-        self.assertEqual("Not valid heading syntax.", block_to_block_type(block2))
+        self.assertEqual("normal", block_to_block_type(block2))
         
         block3 = "#######This is a heading\n"
-        self.assertEqual("Not valid heading syntax.", block_to_block_type(block3))
+        self.assertEqual("normal", block_to_block_type(block3))
 
     def test_block_to_blocktype_code(self):
         block = "```This is a code block```\n"
         self.assertEqual("code", block_to_block_type(block))
         
         block2 = "``This is a code block``\n"
-        self.assertEqual("Not valid code syntax.", block_to_block_type(block2))
+        self.assertEqual("normal", block_to_block_type(block2))
 
     def test_block_to_blocktype_code(self):
         block = ">This is a quote block\n"
@@ -64,8 +64,8 @@ class TestMarkdowns(unittest.TestCase):
             """### This is a *heading*
             # This is a sub heading"""
         )
-        expected = HTMLNode("div", children=[HTMLNode("h3", children=[HTMLNode(None, "This is a "), HTMLNode("i", "heading")]), 
-                    HTMLNode("h1", children=[HTMLNode(None, "This is a sub heading")])])
+        expected = ParentNode("div", children=[ParentNode("h3", children=[LeafNode(None, "This is a "), LeafNode("i", "heading")]), 
+                    ParentNode("h1", children=[LeafNode(None, "This is a sub heading")])])
         actual = markdown_to_html_node(md)
         self.assertEqual(expected, actual)
     
@@ -74,12 +74,12 @@ class TestMarkdowns(unittest.TestCase):
             """This is a paragraph of text. It has some **bold** and *italic* words inside of it.
             This is still part of the paragraph."""
         )
-        expected = HTMLNode("div", children=[HTMLNode("p", children=[HTMLNode(None, "This is a paragraph of text. It has some "), 
-                                            HTMLNode("b", "bold"), 
-                                            HTMLNode(None, " and "), 
-                                            HTMLNode("i", "italic"), 
-                                            HTMLNode(None, " words inside of it."),
-                                            HTMLNode(None, "This is still part of the paragraph.")])])
+        expected = ParentNode("div", children=[ParentNode("p", children=[LeafNode(None, "This is a paragraph of text. It has some "), 
+                                            LeafNode("b", "bold"), 
+                                            LeafNode(None, " and "), 
+                                            LeafNode("i", "italic"), 
+                                            LeafNode(None, " words inside of it."),
+                                            LeafNode(None, "This is still part of the paragraph.")])])
         actual = markdown_to_html_node(md)
         self.assertEqual(expected, actual)
     
@@ -88,12 +88,12 @@ class TestMarkdowns(unittest.TestCase):
             """>This is a quote of text. It has some **bold** and *italic* words inside of it.
             >This is still part of the quote."""
         )
-        expected = HTMLNode("div", children=[HTMLNode("blockquote", children=[HTMLNode(None, "This is a quote of text. It has some "), 
-                                    HTMLNode("b", "bold"), 
-                                    HTMLNode(None, " and "), 
-                                    HTMLNode("i", "italic"), 
-                                    HTMLNode(None, " words inside of it."),
-                                    HTMLNode(None, "This is still part of the quote.")])])
+        expected = ParentNode("div", children=[ParentNode("blockquote", children=[LeafNode(None, "This is a quote of text. It has some "), 
+                                    LeafNode("b", "bold"), 
+                                    LeafNode(None, " and "), 
+                                    LeafNode("i", "italic"), 
+                                    LeafNode(None, " words inside of it."),
+                                    LeafNode(None, "This is still part of the quote.")])])
         actual = markdown_to_html_node(md)
         self.assertEqual(expected, actual)
 
@@ -102,12 +102,12 @@ class TestMarkdowns(unittest.TestCase):
             """```This is a quote of text formatted as code. It has some **bold** and *italic* words inside of it.
             This is still part of the quote.```"""
         )
-        expected = HTMLNode("div", children=[HTMLNode("pre", children=[HTMLNode("code", children=[HTMLNode(None, "This is a quote of text formatted as code. It has some "), 
-                                    HTMLNode("b", "bold"), 
-                                    HTMLNode(None, " and "), 
-                                    HTMLNode("i", "italic"), 
-                                    HTMLNode(None, " words inside of it."),
-                                    HTMLNode(None, "This is still part of the quote.")])])])
+        expected = ParentNode("div", children=[ParentNode("pre", children=[ParentNode("code", children=[LeafNode(None, "This is a quote of text formatted as code. It has some "), 
+                                    LeafNode("b", "bold"), 
+                                    LeafNode(None, " and "), 
+                                    LeafNode("i", "italic"), 
+                                    LeafNode(None, " words inside of it."),
+                                    LeafNode(None, "This is still part of the quote.")])])])
         actual = markdown_to_html_node(md)
         self.assertEqual(expected, actual)
         

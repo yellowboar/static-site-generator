@@ -5,25 +5,27 @@ from imglinkextractor import extract_markdown_links
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     split_list = []
     split_nodes = []
-
+    punctuation = ":.,()"
     for node in old_nodes:
         if node.text_type != TextNode.text_type_text:
             split_nodes.append(node)
             continue
         if len(node.text.split(delimiter)) == 1:
             split_nodes.append(node)
-        else:
-            split_list.extend(node.text.split(delimiter))
-
-    for seq in split_list:
-        if not seq:
             continue
-        if seq.endswith("\n"):
-            seq = seq[:-1]
-        if seq[0] != " " and seq[-1] !=  " ":
-            split_nodes.append(TextNode(seq, text_type))
-        else: 
-            split_nodes.append(TextNode(seq, TextNode.text_type_text))
+        split_list.extend(node.text.split(delimiter))
+        for seq in split_list:
+            if not seq:
+                continue
+            if seq.endswith("\n"):
+                seq = seq[:-1]
+
+            if (seq[0] != " " and (seq[0] not in punctuation) and 
+                seq[-1] !=  " " and (seq[-1] not in punctuation)):
+                split_nodes.append(TextNode(seq, text_type))
+            else: 
+                split_nodes.append(TextNode(seq, TextNode.text_type_text))
+            split_list = []
 
     return split_nodes
 
